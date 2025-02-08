@@ -4,11 +4,11 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule,ReactiveFormsModule,MatProgressSpinnerModule],
+  imports: [CommonModule,ReactiveFormsModule,MatProgressSpinnerModule,RouterLink],
   templateUrl: './login.component.html',
   styles: ``
 })

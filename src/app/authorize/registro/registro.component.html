@@ -1,1 +1,55 @@
-<p>registro works!</p>
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-xl w-full">
+      <h1 class="text-lime-900 font-black text-xl capitalize md:flex md:justify-center">Registro de Usuario</h1>
+      <div *ngIf="cargando" class="flex items-center justify-center mb-4">
+        <mat-progress-spinner mode="indeterminate" color="primary" diameter="40">
+        </mat-progress-spinner>
+      </div>
+      <form [formGroup]="registroForm" class="my-10 bg-white shadow rounded-lg px-10 py-2" (ngSubmit)="onSubmit()">
+        <div class="my-5">
+            <label for="email" class="uppercase text-gray-600 block text-xl font-bold">Nombre Completo</label>
+            <input id="nombre" type="text" formControlName="nombre" class="w-full mt-2 p-3 border rounded-xl bg-gray-50" />
+            <div *ngIf="nombre?.invalid && nombre?.touched" class="text-red-500">
+              <small>El nombre es inválido o está vacío.</small>
+            </div>
+          </div>
+
+        <div class="my-5">
+          <label for="email" class="uppercase text-gray-600 block text-xl font-bold">Correo electrónico</label>
+          <input id="email" type="email" formControlName="email" class="w-full mt-2 p-3 border rounded-xl bg-gray-50" />
+          <div *ngIf="email?.invalid && email?.touched" class="text-red-500">
+            <small>El correo es inválido o está vacío.</small>
+          </div>
+        </div>
+      
+        <div class="my-5">
+          <label for="password" class="uppercase text-gray-600 block text-xl font-bold">Contraseña</label>
+          <input id="password" type="password" formControlName="password" class="w-full mt-2 p-3 border rounded-xl bg-gray-50" />
+          <div *ngIf="password?.invalid && password?.touched" class="text-red-500">
+            <small>La contraseña es obligatoria.</small>
+          </div>
+        </div>
+
+        <div class="my-5">
+            <label for="repetirPassword" class="uppercase text-gray-600 block text-xl font-bold">Repetir Contraseña</label>
+            <input id="repetirPassword" type="password" formControlName="repetirPassword" class="w-full mt-2 p-3 border rounded-xl bg-gray-50" />
+            <div *ngIf="repetirPassword?.invalid && repetirPassword?.touched" class="text-red-500">
+              <small>La contraseña es obligatoria.</small>
+            </div>
+          </div>
+      
+        <button type="submit" [disabled]="registroForm.invalid" class="hover:bg-green-950 transition-colors bg-green-900 w-full py-3 text-white uppercase font-bold rounded hover:cursor-pointer">Crear Cuenta</button>
+
+        <div class="flex items-center justify-between py-3">
+          <a class="text-gray-500 text-xs" routerLink="/login">¿Ya tienes cuenta? Inicia Sesión</a>
+          <a class="text-gray-500 text-xs" routerLink="/olvidePassword">¿Ha olvidado su contraseña?</a>
+        </div>
+
+        <div *ngIf="errorMessage" class="text-red-500 mt-4">
+          {{ errorMessage }}
+        </div>
+      </form>
+
+    </div>
+  </div>
+  

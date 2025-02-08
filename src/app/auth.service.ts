@@ -35,6 +35,30 @@ export class AuthService {
       })
     )
   }
+  registro(nombre: string, email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(this.apiUrl, {
+      Nombre: nombre,
+      Email: email,
+      Password: password
+    })
+    .pipe(
+      tap(res=>{
+        this.saveToken(res.token);
+        this.setAdmin(res.tipo);
+      })
+    )
+  }
+  recupera(email: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(this.apiUrl, {
+      Email: email
+    })
+    .pipe(
+      tap(res=>{
+        this.saveToken(res.token);
+        this.setAdmin(res.tipo);
+      })
+    )
+  }
   getUserDetails(): Observable<LoginResponse> {
     const token = this.getToken();
     if (!token) {
