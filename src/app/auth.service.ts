@@ -59,6 +59,17 @@ export class AuthService {
       })
     )
   }
+  reinicio(password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(this.apiUrl, {
+      Password: password
+    })
+    .pipe(
+      tap(res=>{
+        this.saveToken(res.token);
+        this.setAdmin(res.tipo);
+      })
+    )
+  }
   getUserDetails(): Observable<LoginResponse> {
     const token = this.getToken();
     if (!token) {
