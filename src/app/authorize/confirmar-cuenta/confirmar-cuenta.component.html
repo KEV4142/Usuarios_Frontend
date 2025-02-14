@@ -1,18 +1,25 @@
 <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="bg-white p-8 rounded-lg shadow-lg max-w-xl w-full">
-      <h1 class="text-lime-900 font-black text-xl capitalize md:flex md:justify-center">Bienvenido</h1>
-      <div *ngIf="cargando" class="flex items-center justify-center mb-4">
-        <mat-progress-spinner mode="indeterminate" color="primary" diameter="40">
-        </mat-progress-spinner>
-      </div>
-      
-      <div class="flex items-center justify-center py-4">
-        <a class="text-center font-bold text-sm text-slate-600 mt-10 uppercase block" routerLink="/login">Ya puedes Iniciar Sesión</a>
-      </div>
-        <div *ngIf="errorMessage" class="text-red-500 mt-4">
-          {{ errorMessage }}
-        </div>
+  <div class="bg-white p-8 rounded-lg shadow-lg max-w-xl w-full">
+    <h1 class="text-lime-900 font-black text-xl capitalize md:flex md:justify-center">
+      Confirmación de Cuenta
+    </h1>
 
+    <div *ngIf="cargando" class="flex items-center justify-center mb-4">
+      <mat-progress-spinner mode="indeterminate" color="primary" diameter="40"></mat-progress-spinner>
+    </div>
+
+    <div *ngIf="mensajeExito" class="text-green-600 text-center font-bold">
+      {{ mensajeExito }}
+    </div>
+
+    <div *ngIf="errorMessage" class="text-red-500 text-center font-bold">
+      {{ errorMessage }}
+    </div>
+
+    <div class="flex items-center justify-center py-4" *ngIf="!cargando">
+      <a class="text-center font-bold text-sm text-slate-600 mt-10 uppercase block" routerLink="/login">
+        Ir al inicio de sesión
+      </a>
     </div>
   </div>
-  
+</div>

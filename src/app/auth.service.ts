@@ -70,6 +70,11 @@ export class AuthService {
       })
     )
   }
+  confirmEmail(userId: string, token: string): Observable<any> {
+    const url = `${environment.apiUrl}account/confirmemail?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}`;
+    return this.http.get(url);
+  }
+  
   getUserDetails(): Observable<LoginResponse> {
     const token = this.getToken();
     if (!token) {
