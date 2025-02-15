@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-reinicio-password',
@@ -11,49 +12,82 @@ import { AuthService } from '../../auth.service';
   templateUrl: './reinicio-password.component.html',
   styles: ``
 })
-export class ReinicioPasswordComponent {
+export class ReinicioPasswordComponent implements OnInit {
   cargando: boolean = false;
   reinicioForm: FormGroup;
   errorMessage: string = '';
+  userId: string = '';
+  token: string = '';
 
-  constructor(private fb: FormBuilder,private authService: AuthService,private router: Router) {
-      this.reinicioForm = this.fb.group({
-        password: ['', Validators.required],
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
+  ) {
+    this.reinicioForm = this.fb.group(
+      {
+        password: ['', [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/[A-Z]/),
+          Validators.pattern(/[\W_]/),
+          Validators.pattern(/\d/)
+        ]],
         repetirPassword: ['', Validators.required]
-      });
+      },
+      { validators: this.passwordsCoinciden }
+    );
+  }
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.userId = params['userId'];
+      this.token = params['token'];
+    });
+  }
+
+  get password(): AbstractControl {
+    return this.reinicioForm.get('password') ?? { value: '', errors: null, touched: false } as AbstractControl;
+  }
+  
+  get repetirPassword(): AbstractControl {
+    return this.reinicioForm.get('repetirPassword') ?? { value: '', errors: null, touched: false } as AbstractControl;
+  }
+  
+
+  passwordsCoinciden(group: AbstractControl): ValidationErrors | null {
+    const password = group.get('password')?.value;
+    const repetirPassword = group.get('repetirPassword')?.value;
+    return password === repetirPassword ? null : { notSame: true };
+  }
+
+  onSubmit(): void {
+    if (this.reinicioForm.invalid) {
+      this.errorMessage = "Las contraseñas no coinciden o no cumplen los requisitos.";
+      return;
     }
 
-    get password() {
-      return this.reinicioForm.get('password');
-    }
-    
-    get repetirPassword() {
-      return this.reinicioForm.get('repetirPassword');
-    }
+    this.cargando = true;
+    const { password } = this.reinicioForm.value;
 
-    onSubmit(): void {
-      if (this.reinicioForm.valid) {
-        this.cargando = true;
-        const { password } = this.reinicioForm.value;
-        this.authService.reinicio(password).subscribe({
-          next: (response) => {
-            this.cargando = false;
-            this.router.navigate(['/dashboard']);
-          },
-          error: (err) => {
-            this.cargando = false;
-            if (err.status === 500) {
-              this.errorMessage = 'Error interno del servidor. Intente nuevamente más tarde.';
-            } else if (err.status === 401) {
-              this.errorMessage = 'Correo electrónico o contraseña incorrectos.';
-            } else {
-              this.errorMessage = 'Ocurrió un error inesperado. Intente nuevamente.';
-            }
-            setTimeout(() => {
-              this.errorMessage = '';
-            }, 5000);
-          }
+    this.authService.reinicio(this.userId, this.token, password).subscribe({
+      next: () => {
+        this.cargando = false;
+        this.snackBar.open('Contraseña Actualizada Exitosamente', 'Cerrar', {
+          duration: 2000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
         });
+        setTimeout(() => this.router.navigate(['/login']), 2000);
+      },
+      error: (err) => {
+        this.cargando = false;
+        this.errorMessage = err.error?.error || 'Ocurrió un error inesperado. Intente nuevamente.';
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 5000);
       }
-    }
+    });
+  }
 }

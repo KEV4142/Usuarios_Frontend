@@ -15,6 +15,7 @@ export class OlvidePasswordComponent {
   cargando: boolean = false;
   recuperarForm: FormGroup;
   errorMessage: string = '';
+  successMessage: string = '';
   constructor(private fb: FormBuilder,private authService: AuthService,private router: Router) {
     this.recuperarForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -29,20 +30,18 @@ export class OlvidePasswordComponent {
     if (this.recuperarForm.valid) {
       this.cargando = true;
       const { email } = this.recuperarForm.value;
+
       this.authService.recupera(email).subscribe({
-        next: (response) => {
+        next: () => {
           this.cargando = false;
-          this.router.navigate(['/dashboard']);
+          this.successMessage = 'Listo. Si el correo es válido, recibirás un email con instrucciones.';
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 3000);
         },
         error: (err) => {
           this.cargando = false;
-          if (err.status === 500) {
-            this.errorMessage = 'Error interno del servidor. Intente nuevamente más tarde.';
-          } else if (err.status === 401) {
-            this.errorMessage = 'Correo electrónico o contraseña incorrectos.';
-          } else {
-            this.errorMessage = 'Ocurrió un error inesperado. Intente nuevamente.';
-          }
+          this.errorMessage = err.error?.error || 'Ocurrió un error inesperado. Intente nuevamente.';
           setTimeout(() => {
             this.errorMessage = '';
           }, 5000);

@@ -31,7 +31,7 @@ export class ConfirmarCuentaComponent implements OnInit {
           setTimeout(() => this.router.navigate(['/login']), 3000);
         },
         error: (error) => {
-          this.errorMessage = 'Error al confirmar el correo. Intenta nuevamente.';
+          this.errorMessage = 'Error al confirmar el correo. Intenta nuevamente.\n'+error.error.error;
           console.error(error);
           this.cargando = false;
         }

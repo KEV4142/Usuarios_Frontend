@@ -48,28 +48,16 @@ export class AuthService {
       })
     )
   }
-  recupera(email: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.apiUrl, {
-      Email: email
-    })
-    .pipe(
-      tap(res=>{
-        this.saveToken(res.token);
-        this.setAdmin(res.tipo);
-      })
-    )
+  recupera(email: string): Observable<any> {
+    const url = `${environment.apiUrl}account/restablecer`;
+    return this.http.post(url, { email });
   }
-  reinicio(password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.apiUrl, {
-      Password: password
-    })
-    .pipe(
-      tap(res=>{
-        this.saveToken(res.token);
-        this.setAdmin(res.tipo);
-      })
-    )
+  
+  reinicio(userId: string, token: string, password: string): Observable<any> {
+    const url = `${environment.apiUrl}account/restablecerpassword?id=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}`;
+    return this.http.put(url, { password });
   }
+  
   confirmEmail(userId: string, token: string): Observable<any> {
     const url = `${environment.apiUrl}account/confirmemail?userId=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}`;
     return this.http.get(url);
