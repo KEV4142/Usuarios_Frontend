@@ -5,12 +5,24 @@
         <mat-progress-spinner mode="indeterminate" color="primary" diameter="40">
         </mat-progress-spinner>
       </div>
-      <form [formGroup]="registroForm" class="my-10 bg-white shadow rounded-lg px-10 py-2" (ngSubmit)="onSubmit()">
+      <div *ngIf="emailEnviado" class="text-center">
+        <h2 class="text-green-700 font-bold text-xl">¡Registro exitoso!</h2>
+        <p class="text-gray-600">Hemos enviado un correo de confirmación a tu dirección de email. Por favor, revisa tu bandeja de entrada y sigue las instrucciones para activar tu cuenta.</p>
+      </div>
+      <form *ngIf="!emailEnviado" [formGroup]="registroForm" class="my-10 bg-white shadow rounded-lg px-10 py-2" (ngSubmit)="onSubmit()">
         <div class="my-5">
-            <label for="email" class="uppercase text-gray-600 block text-xl font-bold">Nombre Completo</label>
+            <label for="nombre" class="uppercase text-gray-600 block text-xl font-bold">Nombre Completo</label>
             <input id="nombre" type="text" formControlName="nombre" class="w-full mt-2 p-3 border rounded-xl bg-gray-50" />
             <div *ngIf="nombre?.invalid && nombre?.touched" class="text-red-500">
               <small>El nombre es inválido o está vacío.</small>
+            </div>
+          </div>
+
+          <div class="my-5">
+            <label for="userName" class="uppercase text-gray-600 block text-xl font-bold">Nombre de Usuario</label>
+            <input id="userName" type="text" formControlName="userName" class="w-full mt-2 p-3 border rounded-xl bg-gray-50" />
+            <div *ngIf="userName?.invalid && userName?.touched" class="text-red-500">
+              <small>El Nombre de Usuario es inválido o está vacío.</small>
             </div>
           </div>
 
@@ -34,7 +46,10 @@
             <label for="repetirPassword" class="uppercase text-gray-600 block text-xl font-bold">Repetir Contraseña</label>
             <input id="repetirPassword" type="password" formControlName="repetirPassword" class="w-full mt-2 p-3 border rounded-xl bg-gray-50" />
             <div *ngIf="repetirPassword?.invalid && repetirPassword?.touched" class="text-red-500">
-              <small>La contraseña es obligatoria.</small>
+              <small>La repetición de la contraseña es obligatoria.</small>
+            </div>
+            <div *ngIf="passwordsNoCoinciden" class="text-red-500">
+              <small>Las contraseñas no coinciden.</small>
             </div>
           </div>
       

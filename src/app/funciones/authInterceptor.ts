@@ -5,7 +5,7 @@ import { HttpRequest, HttpHandlerFn } from '@angular/common/http';
 export function authInterceptor(req: HttpRequest<any>, next: HttpHandlerFn) {
   const authService = inject(AuthService); 
   const token = authService.getToken();
-  const excludedUrls = ['/login', '/web', '/account/confirmemail', '/account/restablecerpassword','/account/restablecer'];
+  const excludedUrls = ['/login', '/web', '/account/agregar', '/account/confirmemail', '/account/restablecerpassword','/account/restablecer'];
 
   const isExcluded = excludedUrls.some((url) => req.url.includes(url));
 

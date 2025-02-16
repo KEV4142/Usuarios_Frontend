@@ -18,6 +18,7 @@ interface LoginResponse {
 export class AuthService {
   private apiUrl = environment.apiUrl+'account/login';
   private apiUrl1 = environment.apiUrl+'account/me';
+  private apiRegistro = environment.apiUrl+'account/agregar';
 
   private Tipo : string | undefined;
 
@@ -35,11 +36,12 @@ export class AuthService {
       })
     )
   }
-  registro(nombre: string, email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.apiUrl, {
-      Nombre: nombre,
-      Email: email,
-      Password: password
+  registro(nombre: string, email: string, password: string, userName: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(this.apiRegistro, {
+      nombreCompleto: nombre,
+      username: userName,
+      email: email,
+      password: password
     })
     .pipe(
       tap(res=>{
